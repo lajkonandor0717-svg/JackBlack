@@ -1,0 +1,15 @@
+{
+  "name": "blackjack-pixel-table",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A multiplayer, server-authoritative pixel-art blackjack game.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "launch": "start-blackjack.bat",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
