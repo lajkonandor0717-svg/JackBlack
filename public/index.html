@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="hu">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101913">
+    <meta name="description" content="Pixel-art blackjack virtuális zsetonokkal, ellenfelekkel és saját asztalokkal.">
+    <title>Blackjack — Pixelasztal</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/client.js" defer></script>
+</head>
+<body>
+    <main class="app-shell">
+        <header class="masthead">
+            <a class="brand" href="/" aria-label="Blackjack kezdőlap">
+                <span class="brand-suit" aria-hidden="true">♠</span>
+                <span>BLACKJACK<small>PIXELASZTAL</small></span>
+            </a>
+            <button class="help-chip" id="open-tutorial" type="button" aria-label="Játékszabályok és próbakör">?</button>
+        </header>
+
+        <section class="setup panel" id="setup-screen">
+            <p class="eyebrow">Üdvözöl az asztal</p>
+            <h1>Keverjünk egyet?</h1>
+            <p class="muted">Virtuális zsetonokkal játszhatsz. Az osztó kiosztja, te döntesz.</p>
+
+            <label class="field-label" for="player-name">Becenév</label>
+            <input id="player-name" maxlength="20" autocomplete="nickname" placeholder="Játékos" value="Játékos">
+
+            <div class="setup-columns">
+                <article class="mode-card">
+                    <span class="mode-icon" aria-hidden="true">♟</span>
+                    <h2>Egyedül, játékos ellenfelekkel</h2>
+                    <p class="muted">Te és 1–4 ellenfél ültök az asztalhoz.</p>
+                    <label class="field-label" for="bot-count">Ellenfelek</label>
+                    <select id="bot-count">
+                        <option value="1">1 ellenfél</option>
+                        <option value="2" selected>2 ellenfél</option>
+                        <option value="3">3 ellenfél</option>
+                        <option value="4">4 ellenfél</option>
+                    </select>
+                    <button class="pixel-button primary" id="create-solo" type="button">Játék indítása</button>
+                </article>
+                <article class="mode-card">
+                    <span class="mode-icon" aria-hidden="true">♣</span>
+                    <h2>Játék barátokkal</h2>
+                    <p class="muted">Hozz létre egy asztalt, vagy csatlakozz egy szobakóddal. Legfeljebb 7 játékos.</p>
+                    <button class="pixel-button primary" id="create-room" type="button">Új asztal nyitása</button>
+                    <div class="join-row">
+                        <input id="room-code" maxlength="5" autocomplete="off" placeholder="KÓD" aria-label="Szobakód">
+                        <button class="pixel-button" id="join-room" type="button">Belépés</button>
+                    </div>
+                </article>
+            </div>
+            <p class="error-message" id="setup-error" role="alert" hidden></p>
+            <p class="fine-print">100 kezdőzseton · 1 zseton = 1 pont · jokerek nélkül</p>
+        </section>
+
+        <section class="table-screen" id="table-screen" hidden>
+            <div class="table-toolbar">
+                <div>
+                    <span class="eyebrow" id="table-phase">Várakozás</span>
+                    <h1 class="table-title">Asztal <span id="table-code">-----</span></h1>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="pixel-button subtle" id="copy-code" type="button">Kód másolása</button>
+                    <button class="pixel-button subtle" id="leave-table" type="button">Kiszállás</button>
+                </div>
+            </div>
+            <div class="table-felt">
+                <section class="dealer-area" aria-label="Osztó lapjai">
+                    <div class="seat-heading"><span class="avatar dealer-avatar">♛</span><div><strong>Osztó</strong><small id="dealer-total">Várja a kört</small></div></div>
+                    <div class="cards" id="dealer-cards"></div>
+                </section>
+                <p class="round-message" id="round-message" aria-live="polite"></p>
+                <div class="seats" id="player-seats" aria-label="Játékosok"></div>
+            </div>
+            <div class="table-controls">
+                <div class="betting-controls" id="betting-controls" hidden>
+                    <div class="bet-display"><span>Saját tét</span><strong><span id="bet-value">0</span> <small>zseton</small></strong></div>
+                    <div class="bet-chips">
+                        <button class="chip-button" id="bet-minus" type="button" aria-label="Tét csökkentése">−</button>
+                        <button class="chip-button" id="bet-plus" type="button" aria-label="Tét növelése">+</button>
+                        <button class="pixel-button" id="ready-button" type="button">Tét leadása</button>
+                    </div>
+                </div>
+                <div class="play-controls" id="play-controls" hidden>
+                    <button class="draw-pile" id="draw-card" type="button" aria-label="Kattints a paklira a lap húzásához">
+                        <span class="deck-back"><i>♠</i><b>DRAW</b><i>♠</i></span>
+                        <span class="deck-label">HÚZZ LAPOT</span>
+                    </button>
+                    <div class="action-tiles" aria-label="Kör műveletei">
+                        <button class="action-tile" id="stand-action" type="button"><span>Ⅱ</span><small>MEGÁLLÁS</small></button>
+                        <button class="action-tile" id="double-action" type="button"><span>×2</span><small>DUPLÁZÁS</small></button>
+                        <button class="action-tile" id="split-action" type="button"><span>↔</span><small>SPLIT</small></button>
+                    </div>
+                </div>
+            </div>
+            <p class="fine-print table-note">Az osztó nem látja a pakli következő lapját. A kör elején megkevert, teljes 52 lapos pakliból osztunk.</p>
+            <p class="error-message" id="table-error" role="alert" hidden></p>
+        </section>
+
+        <footer class="site-footer">Csak szórakozásból — a zsetonok virtuálisak, valódi pénz nincs a játékban.</footer>
+    </main>
+
+    <dialog class="tutorial" id="tutorial-dialog" aria-labelledby="tutorial-title">
+        <div class="tutorial-card">
+            <div class="tutorial-top">
+                <span class="eyebrow">Gyors szabályismertető</span>
+                <button class="help-chip close-tutorial" type="button" aria-label="Oktató bezárása">×</button>
+            </div>
+            <h2 id="tutorial-title">Blackjack alapok</h2>
+            <div class="tutorial-copy" id="tutorial-copy"></div>
+            <div class="tutorial-demo" id="tutorial-demo" hidden>
+                <div class="demo-seat"><span class="eyebrow">TE · 16</span><div class="cards" id="demo-player-cards"></div></div>
+                <div class="demo-seat"><span class="eyebrow">OSZTÓ · 10 + ?</span><div class="cards" id="demo-dealer-cards"></div></div>
+                <p class="muted" id="demo-message">A paklira kattintva húzol, a megállás ikonnal lezárod a kezed.</p>
+                <div class="join-row">
+                    <button class="pixel-button primary" id="demo-hit" type="button">Paklira kattintok · lapot húzok</button>
+                    <button class="pixel-button" id="demo-stand" type="button">Megállok</button>
+                </div>
+            </div>
+            <div class="tutorial-actions">
+                <button class="pixel-button subtle close-tutorial" type="button">Kihagyás</button>
+                <button class="pixel-button primary" id="tutorial-next" type="button">Próbajáték</button>
+            </div>
+        </div>
+    </dialog>
+</body>
+</html>
